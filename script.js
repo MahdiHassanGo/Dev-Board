@@ -29,7 +29,11 @@ tasks.forEach((taskButton) => {
 
     const card = taskButton.closest('article');
     const title = card?.querySelector('h3')?.innerText?.trim() || 'Task';
-    const createTime = 'Just now';
+   const createTime = new Date().toLocaleTimeString([], {
+  hour: '2-digit',
+  minute: '2-digit',
+});
+
 
     const li = document.createElement('li');
     li.className = 'rounded-xl bg-slate-50 p-3 text-sm text-slate-600';
