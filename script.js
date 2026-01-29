@@ -1,28 +1,52 @@
-
-
-const taskButton1 =document.getElementById('task-status-btn-1');
-const taskButton2 =document.getElementById('task-status-btn-2');
-const taskButton3 =document.getElementById('task-status-btn-3');
-const taskButton4 =document.getElementById('task-status-btn-4');
-const taskButton5 =document.getElementById('task-status-btn-5');
-const taskButton6 =document.getElementById('task-status-btn-6');
-
-
 const taskAssigned = document.getElementById('task-assigned-count');
-  
+const notifCount = document.getElementById('notif-count');
+const activityList = document.getElementById('activity-list');
 
-const tasks = [taskButton1, taskButton2, taskButton3, taskButton4, taskButton5, taskButton6];
+const tasks = [
+  document.getElementById('task-status-btn-1'),
+  document.getElementById('task-status-btn-2'),
+  document.getElementById('task-status-btn-3'),
+  document.getElementById('task-status-btn-4'),
+  document.getElementById('task-status-btn-5'),
+  document.getElementById('task-status-btn-6'),
+].filter(Boolean);
 
-tasks.forEach(function(taskButton) {
-    taskButton.addEventListener('click', function(e) {
-        e.preventDefault();
-        console.log('Task Completed');
-        taskButton.setAttribute('disabled', true);
-        taskButton.style.backgroundColor = 'gray';
-        let currentCount = parseInt(taskAssigned.innerText);
-        const UpdatedTaskCount = currentCount - 1;
-        taskAssigned.innerText = UpdatedTaskCount;
+tasks.forEach((taskButton) => {
+  taskButton.addEventListener('click', (e) => {
+    e.preventDefault();
 
-    });
-}
-);
+    taskButton.disabled = true;
+    taskButton.classList.remove('bg-indigo-600', 'hover:bg-indigo-700');
+    taskButton.classList.add('bg-slate-400', 'cursor-not-allowed');
+
+    let currentCount = parseInt(taskAssigned.innerText);
+    if (currentCount <= 0) return;
+
+    taskAssigned.innerText = currentCount - 1;
+
+    let currentNotifCount = parseInt(notifCount.innerText);
+    notifCount.innerText = currentNotifCount + 1;
+
+    const card = taskButton.closest('article');
+    const title = card?.querySelector('h3')?.innerText?.trim() || 'Task';
+    const createTime = 'Just now';
+
+    const li = document.createElement('li');
+    li.className = 'rounded-xl bg-slate-50 p-3 text-sm text-slate-600';
+    li.innerHTML = `Completed “${title}”
+      <span class="mt-1 block text-xs text-slate-400">${createTime}</span>`;
+
+    activityList.prepend(li);
+
+    if (parseInt(taskAssigned.innerText) <= 0) {
+      alert('No tasks remaining!');
+    }
+  });
+});
+
+
+
+const ClearHistoryBtn = document.getElementById('activity-clear-btn');
+ClearHistoryBtn.addEventListener('click', function () {
+    activityList.innerHTML = '';
+}); 
